@@ -13,9 +13,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-3%y3laftm62q0zaj+s7#p-xqq9(&#q+)s8)p-&#&bz*0$!xu$0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True  # Set to False when deploying to production
 
-ALLOWED_HOSTS = ['gurudeepv.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'gurudeepv.pythonanywhere.com']
 
 
 # Application definition
@@ -113,7 +113,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'jewelryshop/static')]
-STATIC_ROOT = '/home/yourusername/Jewelry-shop/staticfiles' # Automatically Created on Production
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Automatically Created on Production
 
 # Settings for Media
 MEDIA_URL = '/media/'
