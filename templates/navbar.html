@@ -1,0 +1,124 @@
+{% load static %}
+
+<!-- Premium Navigation Bar -->
+<header class="header bg-white">
+  <div class="container-fluid px-3">
+    <nav class="navbar navbar-expand-lg navbar-dark py-3 px-0">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="{% url 'store:home' %}"
+              style="background: transparent; color: #000000 !important; font-weight: 700; padding: 0.5rem 1.5rem; border-radius: 25px;">
+              <!--<i class="fas fa-home me-1">--></i> Home
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="pagesDropdown" href="#" data-toggle="dropdown" 
+               aria-haspopup="true" aria-expanded="false"
+               style="background: transparent; color: #000000 !important; font-weight: 700; padding: 0.5rem 1.5rem; border-radius: 25px;">
+              <i class="fas fa-th-large me-1"></i> Collections
+            </a>
+            <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+              {% if categories_menu %}
+                {% for cat_menu in categories_menu %}
+                  <a class="dropdown-item" href="{% url 'store:category-products' cat_menu.slug %}">
+                    <i class="fas fa-chevron-right me-2"></i>{{cat_menu.title}}
+                  </a>
+                {% endfor %}
+              {% endif %}
+              <hr class="my-2">
+              <a class="dropdown-item" href="{% url 'store:all-categories' %}">
+                <i class="fas fa-grip-horizontal me-2"></i>View All Collections
+              </a>
+            </div>
+          </li>
+          <!--
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'store:home' %}"
+              style="background: transparent; color: #000000 !important; font-weight: 700; padding: 0.5rem 1.5rem; border-radius: 25px;">
+              <i class="fas fa-blog me-1"></i> Blog
+            </a>
+          </li>
+          -->
+          <li class="nav-item">
+            <a class="nav-link" href="#contact"
+              style="background: transparent; color: #000000 !important; font-weight: 700; padding: 0.5rem 1.5rem; border-radius: 25px;">
+              <!--<i class="fas fa-envelope me-1">--></i> Contact
+            </a>
+          </li>
+        
+          {% if request.user.is_authenticated %}           
+            <li class="nav-item">
+              <a class="nav-link position-relative" href="{% url 'store:cart' %}"
+                style="background: transparent; color: #000000 !important; font-weight: 700; padding: 0.5rem 1.5rem; border-radius: 25px;">
+                <!--<i class="fas fa-shopping-bag me-1">--></i>Cart
+                {% if cart_items.count > 0 %}
+                  <span class="badge badge-pill bg-warning text-dark ms-1">{{cart_items.count}}</span>
+                {% endif %}
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'store:wishlist' %}"
+                style="background: transparent; color: #000000 !important; font-weight: 700; padding: 0.5rem 1.5rem; border-radius: 25px;">
+                <!--<i class="far fa-heart me-1">--></i>Wishlist
+              </a>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" id="accountDropdown" href="#" data-toggle="dropdown" 
+                 aria-haspopup="true" aria-expanded="false"
+                 style="background: transparent; color: #000000 !important; font-weight: 700; padding: 0.5rem 1.5rem; border-radius: 25px;">
+                <i class="fas fa-user-circle me-1"></i>Account
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accountDropdown">
+                <a class="dropdown-item" href="{% url 'store:profile' %}">
+                  <i class="fas fa-user me-2"></i>My Profile
+                </a>
+                <a class="dropdown-item" href="{% url 'store:cart' %}">
+                  <i class="fas fa-shopping-cart me-2"></i>My Cart
+                </a>
+                <a class="dropdown-item" href="{% url 'store:orders' %}">
+                  <i class="fas fa-box me-2"></i>My Orders
+                </a>
+                <a class="dropdown-item" href="{% url 'store:password-change' %}">
+                  <i class="fas fa-key me-2"></i>Change Password
+                </a>
+                <hr class="my-2">
+                <form method="post" action="{% url 'store:logout' %}" style="margin: 0;">
+                  {% csrf_token %}
+                  <button type="submit" class="dropdown-item" style="border: none; background: none; width: 100%; text-align: left; cursor: pointer;">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                  </button>
+                </form>
+              </div>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'store:login' %}"
+                style="border: 2px solid #FFD700; background: transparent; color: #FFD700 !important; font-weight: 700; padding: 0.5rem 1.5rem; border-radius: 25px;">
+                <i class="fas fa-sign-in-alt me-1"></i>Login
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link btn btn-outline-warning text-white ms-2" href="{% url 'store:register' %}" 
+                 style="border: 2px solid #FFD700; background: transparent; color: #FFD700 !important; font-weight: 700; padding: 0.5rem 1.5rem; border-radius: 25px;">
+                <i class="fas fa-user-plus me-1"></i>Register
+              </a>
+            </li>
+          {% endif %}
+          
+          <li class="nav-item ms-auto">
+            <a class="nav-link" href="{% url 'store:home' %}"
+            style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; letter-spacing: 3px; color: #FFD700 !important; text-shadow: 0 2px 10px rgba(255,215,0,0.3); padding: 0.5rem 35.5rem;">Oriva</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+

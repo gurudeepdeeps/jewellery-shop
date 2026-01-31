@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- PREMIUM HERO SECTION -->
+<div class="container-fluid px-0">
+  <section class="hero bg-cover bg-center d-flex align-items-center" style="background: url({% static 'img/hero-jewlrey-banner.jpg' %})">
+    <div class="container py-5">
+      <div class="row px-4 px-lg-5 align-items-center">
+        <div class="col-lg-7">
+          <p class="text-uppercase mb-3" style="color: #FFD700; font-weight: 700; letter-spacing: 4px; font-size: 1.1rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.3);">
+            <i class="fas fa-star me-2"></i>Exclusive Collection 2026
+          </p>
+          <h1 class="display-3 text-uppercase mb-4" style="font-weight: 900; color: #FFD700; line-height: 1.2; text-shadow: 1px 1px 3px rgba(0,0,0,0.4);">
+            Timeless Elegance<br>
+            <span style="color: #FFFFFF; text-shadow: 1px 1px 2px rgba(0,0,0,0.4);">Refined Luxury</span>
+          </h1>
+          <p class="lead mb-4" style="color: #000000; font-size: 1.2rem; font-weight: 600; text-shadow: 1px 1px 2px rgba(255,255,255,0.5);">
+            Discover our exquisite collection of handcrafted jewelry pieces, 
+            where every detail tells a story of perfection and artistry.
+          </p>
+          <div class="d-flex gap-3 flex-wrap">
+            <a class="btn btn-dark px-5 py-3" href="{% url 'store:all-categories' %}">
+              <i class="fas fa-shopping-bag me-2"></i>Explore Collections
+            </a>
+            <a class="btn btn-outline-light px-5 py-3" href="#" 
+               style="border: 2px solid var(--primary-gold); color: var(--primary-gold); font-weight: 700;">
+              <i class="fas fa-play-circle me-2"></i>Watch Story
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="container">
+  <!-- FEATURED CATEGORIES -->
+  <section class="pt-5 pb-3" style="background-color: #ffffff;">
+    <header class="text-center mb-5">
+      <p class="text-uppercase mb-2" style="color: #FFA500; font-weight: 700; letter-spacing: 3px; font-size: 1rem;">
+        <i class="fas fa-gem me-2"></i>Curated Collections
+      </p>
+      <h2 class="display-5 text-uppercase mb-3" style="font-weight: 900; letter-spacing: 3px; color: #000000;">
+        Discover Our Premium Categories
+      </h2>
+      <div class="gold-line mx-auto"></div>
+      <p style="max-width: 600px; margin: 0 auto; font-size: 1.1rem; color: #000000; font-weight: 600; line-height: 1.8;">
+        Each piece is meticulously crafted to perfection, combining traditional artistry with contemporary design
+      </p>
+    </header>
+    
+    <div class="row g-4">
+      {% if categories %}
+        {% for category in categories %}
+          <div class="col-md-4 animate-on-scroll">
+            <a class="category-item d-block" href="{% url 'store:category-products' category.slug %}">
+              {% if category.category_image %}
+                <img class="img-fluid" src="{{ category.category_image.url }}" alt="{{ category.title }}">
+              {% else %}
+                <img class="img-fluid" src="{% static 'img/cat-img-1.jpg' %}" alt="{{ category.title }}">
+              {% endif %}
+              <strong class="category-item-title">
+                <i class="fas fa-arrow-right me-2"></i>{{ category.title }}
+              </strong>
+            </a>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12 text-center py-5">
+          <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+          <p class="text-muted">No categories available at the moment</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <div class="premium-divider"></div>
+
+  <!-- TRENDING PRODUCTS -->
+  <section class="py-5">
+    <header class="text-center mb-5">
+      <p class="text-uppercase mb-2" style="color: #FFA500; font-weight: 700; letter-spacing: 3px; font-size: 1rem;">
+        <i class="fas fa-fire me-2"></i>Bestsellers
+      </p>
+      <h2 class="display-5 text-uppercase mb-3" style="font-weight: 900; letter-spacing: 3px; color: #0a0a0a;">
+        Trending Luxury Pieces
+      </h2>
+      <div class="gold-line mx-auto"></div>
+      <p class="text-muted" style="max-width: 600px; margin: 0 auto; font-size: 1.1rem; color: #424242;">
+        Handpicked selections that define elegance and sophistication
+      </p>
+    </header>
+    
+    <div class="row g-4">
+      {% if products %}
+        {% for product in products %}
+          <div class="col-xl-3 col-lg-4 col-md-6 animate-on-scroll">
+            <div class="product text-center">
+              <div class="position-relative mb-3">
+                {% if product.discount %}
+                  <div class="badge">
+                    <i class="fas fa-tag me-1"></i>SALE
+                  </div>
+                {% endif %}
+                
+                <a class="d-block" href="{% url 'store:product-detail' product.slug %}">
+                  {% if product.product_image %}
+                    <img class="img-fluid w-100" src="{{ product.product_image.url }}" alt="{{product.title}}">
+                  {% else %}
+                    <img class="img-fluid w-100" src="{% static 'img/product-1.jpg' %}" alt="{{product.title}}">
+                  {% endif %}
+                </a>
+
+                <div class="product-overlay">
+                  <ul class="mb-0 list-inline">
+                    <li class="list-inline-item m-2">
+                      {% if request.user.is_authenticated %}
+                        <a class="btn btn-sm btn-outline-dark" href="{% url 'store:add-to-wishlist' %}?prod_id={{product.id}}" title="Add to Wishlist">
+                          <i class="far fa-heart"></i>
+                        </a>
+                      {% else %}
+                        <a class="btn btn-sm btn-outline-dark" href="{% url 'store:login' %}" title="Login to add to Wishlist">
+                          <i class="far fa-heart"></i>
+                        </a>
+                      {% endif %}
+                    </li>
+                    <li class="list-inline-item m-2">
+                      <a class="btn btn-sm btn-outline-dark" href="{% url 'store:product-detail' product.slug %}" title="Quick View">
+                        <i class="fas fa-eye"></i>
+                      </a>
+                    </li>
+                    <li class="list-inline-item m-2 w-100 mt-3">
+                      <form action="{% url 'store:add-to-cart' %}" method="GET" class="d-inline">
+                        <input type="hidden" name="prod_id" value="{{product.id}}" id="product_id">
+                        <button type="submit" class="btn btn-dark w-100">
+                          <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                        </button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              <h6 class="mb-2">
+                <a class="reset-anchor text-decoration-none" href="{% url 'store:product-detail' product.slug %}">
+                  {{ product.title }}
+                </a>
+              </h6>
+              
+              <div class="d-flex justify-content-center align-items-center">
+                <p class="small mb-0" style="color: var(--primary-gold); font-weight: 700; font-size: 1.3rem;">
+                  <i class="fas fa-rupee-sign me-1"></i>{{product.price}}
+                </p>
+              </div>
+              
+              <div class="mt-2">
+                <i class="fas fa-star" style="color: var(--primary-gold); font-size: 0.8rem;"></i>
+                <i class="fas fa-star" style="color: var(--primary-gold); font-size: 0.8rem;"></i>
+                <i class="fas fa-star" style="color: var(--primary-gold); font-size: 0.8rem;"></i>
+                <i class="fas fa-star" style="color: var(--primary-gold); font-size: 0.8rem;"></i>
+                <i class="fas fa-star" style="color: var(--primary-gold); font-size: 0.8rem;"></i>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12 text-center py-5">
+          <i class="fas fa-gem fa-3x text-muted mb-3"></i>
+          <p class="text-muted">No products available at the moment</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- PREMIUM FEATURES -->
+  <section class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border-radius: 20px; margin: 3rem 0;">
+    <div class="container">
+      <div class="row text-center g-4">
+        <div class="col-md-4 col-sm-6">
+          <div class="p-4">
+            <i class="fas fa-shipping-fast fa-3x mb-3" style="color: var(--primary-gold);"></i>
+            <h5 class="font-weight-bold mb-2">Free Shipping</h5>
+            <p class="text-muted small mb-0">On orders above Rs. 5000</p>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="p-4">
+            <i class="fas fa-undo-alt fa-3x mb-3" style="color: var(--primary-gold);"></i>
+            <h5 class="font-weight-bold mb-2">Easy Returns</h5>
+            <p class="text-muted small mb-0">30-day return policy</p>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="p-4">
+            <i class="fas fa-headset fa-3x mb-3" style="color: var(--primary-gold);"></i>
+            <h5 class="font-weight-bold mb-2">24/7 Support</h5>
+            <p class="text-muted small mb-0">Dedicated customer service</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Scroll Animation Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.animate-on-scroll').forEach(element => {
+        observer.observe(element);
+    });
+});
+</script>
+
+{% endblock content %}

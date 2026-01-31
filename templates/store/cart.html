@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<div class="container-fluid px-0">
+  <!-- PREMIUM HERO SECTION -->
+  <section class="py-5" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);">
+    <div class="container">
+      <div class="row px-4 px-lg-5 py-lg-4 align-items-center">
+        <div class="col-lg-6">
+          <h1 class="display-4 mb-0" style="font-weight: 900; color: #FFD700; letter-spacing: 2px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+            <i class="fas fa-shopping-bag mr-3"></i>Shopping Cart
+          </h1>
+        </div>
+        <div class="col-lg-6 text-lg-right">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-lg-end mb-0 px-0 bg-transparent">
+              <li class="breadcrumb-item"><a href="{% url 'store:home' %}" style="color: #FFD700;"><i class="fas fa-home mr-1"></i>Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page" style="color: #ffffff;">Shopping Cart</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="container py-5">
+  {% if cart_products %}
+    
+    {% include 'partials/_messages.html' %}
+
+    <div class="row">
+      <!-- CART ITEMS SECTION -->
+      <div class="col-lg-8 mb-4 mb-lg-0">
+        <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; overflow: hidden;">
+          <div class="card-header py-3" style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); border: none;">
+            <h5 class="mb-0 text-white" style="font-weight: 700;">
+              <i class="fas fa-shopping-cart mr-2"></i>Cart Items ({{cart_products.count}})
+            </h5>
+          </div>
+          <div class="card-body p-0">
+            {% for cart_product in cart_products %}
+            <div class="cart-item p-4 {% if not forloop.last %}border-bottom{% endif %}" style="transition: all 0.3s;">
+              <div class="row align-items-center">
+                <!-- Product Image & Details -->
+                <div class="col-md-5 mb-3 mb-md-0">
+                  <div class="d-flex align-items-center">
+                    <div class="cart-product-image mr-3" style="width: 100px; height: 100px; overflow: hidden; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                      {% if cart_product.product.product_image %}
+                        <a href="{% url 'store:product-detail' cart_product.product.slug %}">
+                          <img src="{{cart_product.product.product_image.url}}" alt="{{cart_product.product.title}}" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;"/>
+                        </a>
+                      {% else %}
+                        <a href="{% url 'store:product-detail' cart_product.product.slug %}">
+                          <img src="{% static 'img/product-detail-3.jpg' %}" alt="{{cart_product.product.title}}" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;"/>
+                        </a>
+                      {% endif %}
+                    </div>
+                    <div>
+                      <h6 class="mb-1" style="font-weight: 700;">
+                        <a href="{% url 'store:product-detail' cart_product.product.slug %}" class="text-dark text-decoration-none">
+                          {{cart_product.product.title}}
+                        </a>
+                      </h6>
+                      <p class="text-muted small mb-0">SKU: {{cart_product.product.sku}}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Price -->
+                <div class="col-md-2 col-6 mb-2 mb-md-0 text-center">
+                  <p class="mb-0 small text-muted">Price</p>
+                  <p class="mb-0 font-weight-bold" style="color: #FFD700; font-size: 1.1rem;">
+                    ₹{{cart_product.product.price|intcomma}}
+                  </p>
+                </div>
+
+                <!-- Quantity Controls -->
+                <div class="col-md-3 col-6 mb-2 mb-md-0">
+                  <p class="mb-2 small text-muted text-center">Quantity</p>
+                  <div class="d-flex align-items-center justify-content-center">
+                    <a href="{% url 'store:minus-cart' cart_product.id %}" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                      <i class="fas fa-minus"></i>
+                    </a>
+                    <input class="form-control form-control-sm text-center mx-2 border-0 font-weight-bold" type="text" value="{{cart_product.quantity}}" readonly style="width: 50px; background: #f8f9fa;"/>
+                    <a href="{% url 'store:plus-cart' cart_product.id %}" class="btn btn-sm btn-outline-secondary rounded-circle" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                      <i class="fas fa-plus"></i>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Total & Remove -->
+                <div class="col-md-2 col-12 text-center">
+                  <p class="mb-1 small text-muted">Total</p>
+                  <p class="mb-2 font-weight-bold" style="color: #000; font-size: 1.2rem;">
+                    ₹{{cart_product.total_price|intcomma}}
+                  </p>
+                  <a href="{% url 'store:remove-cart' cart_product.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to remove this item?')">
+                    <i class="fas fa-trash-alt mr-1"></i>Remove
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Continue Shopping Button -->
+        <a href="{% url 'store:home' %}" class="btn btn-outline-dark btn-lg">
+          <i class="fas fa-arrow-left mr-2"></i>Continue Shopping
+        </a>
+      </div>
+
+      <!-- ORDER SUMMARY & CHECKOUT SECTION -->
+      <div class="col-lg-4">
+        <!-- Order Summary Card -->
+        <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; overflow: hidden; position: sticky; top: 20px;">
+          <div class="card-header py-3" style="background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%); border: none;">
+            <h5 class="mb-0 text-white" style="font-weight: 700;">
+              <i class="fas fa-receipt mr-2"></i>Order Summary
+            </h5>
+          </div>
+          <div class="card-body p-4">
+            <!-- Price Breakdown -->
+            <div class="mb-4">
+              <div class="d-flex justify-content-between mb-3">
+                <span style="font-weight: 600; color: #666;">Subtotal:</span>
+                <span style="font-weight: 700; font-size: 1.1rem;">₹{{amount|intcomma}}</span>
+              </div>
+              <div class="d-flex justify-content-between mb-3">
+                <span style="font-weight: 600; color: #666;">Shipping:</span>
+                <span style="font-weight: 700; color: #28a745;">₹{{shipping_amount}}</span>
+              </div>
+              <div class="border-top pt-3 mt-3">
+                <div class="d-flex justify-content-between">
+                  <span style="font-weight: 700; font-size: 1.1rem; color: #000;">Total:</span>
+                  <span style="font-weight: 900; font-size: 1.4rem; color: #FFD700;">₹{{total_amount|intcomma}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="premium-divider my-4"></div>
+
+            <!-- Shipping Address Section -->
+            <div id="checkout-section">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0" style="font-weight: 700; color: #000;">
+                  <i class="fas fa-map-marker-alt mr-2" style="color: #FFD700;"></i>Shipping Address
+                </h6>
+                <a href="{% url 'store:add-address' %}" class="btn btn-sm btn-outline-primary" style="border-radius: 20px;">
+                  <i class="fas fa-plus mr-1"></i>Add New
+                </a>
+              </div>
+
+              <form action="{% url 'store:checkout' %}" method="GET" id="myform" onsubmit="return validateAddress()">
+                {% if addresses %}
+                  <div class="address-list mb-4" style="max-height: 300px; overflow-y: auto;">
+                    {% for address in addresses %}
+                      <div class="address-card mb-3 p-3" style="border: 2px solid #e0e0e0; border-radius: 10px; cursor: pointer; transition: all 0.3s;" onclick="selectAddress(this)">
+                        <div class="custom-control custom-radio">
+                          <input type="radio" name="address" value="{{address.id}}" class="custom-control-input address-radio" id="address{{address.id}}">
+                          <label class="custom-control-label w-100" for="address{{address.id}}" style="cursor: pointer;">
+                            <div class="d-flex justify-content-between align-items-start">
+                              <div>
+                                <strong class="d-block mb-1" style="color: #FFD700;">
+                                  <i class="fas fa-home mr-1"></i>Address {{forloop.counter}}
+                                </strong>
+                                <p class="mb-0 small text-muted">
+                                  {{address.locality}}<br>
+                                  {{address.city}}, {{address.state}}
+                                </p>
+                              </div>
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+
+                  <!-- Checkout Buttons -->
+                  <button type="submit" class="btn btn-lg btn-block mb-3" style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); border: none; color: #000; font-weight: 700; border-radius: 10px; padding: 15px;">
+                    <i class="fas fa-money-bill-wave mr-2"></i>Cash on Delivery
+                  </button>
+
+                  <div id="paypal-button-container" class="mb-3"></div>
+
+                {% else %}
+                  <div class="alert alert-warning" role="alert" style="border-radius: 10px; border-left: 4px solid #FFA500;">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <strong>No Address Found!</strong>
+                    <p class="mb-2 mt-2 small">Please add a shipping address to proceed with checkout.</p>
+                    <a href="{% url 'store:add-address' %}" class="btn btn-sm btn-warning" style="border-radius: 20px;">
+                      <i class="fas fa-plus mr-1"></i>Add Address Now
+                    </a>
+                  </div>
+                {% endif %}
+              </form>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="text-center mt-4 pt-3 border-top">
+              <div class="row">
+                <div class="col-6">
+                  <i class="fas fa-truck fa-2x mb-2" style="color: #FFD700;"></i>
+                  <p class="small mb-0" style="font-weight: 600;">Fast Delivery</p>
+                </div>
+                <div class="col-6">
+                  <i class="fas fa-undo fa-2x mb-2" style="color: #FFD700;"></i>
+                  <p class="small mb-0" style="font-weight: 600;">Easy Returns</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  {% else %}
+    <!-- Empty Cart -->
+    <div class="text-center py-5">
+      <div class="empty-cart-icon mb-4">
+        <i class="fas fa-shopping-cart fa-5x" style="color: #e0e0e0;"></i>
+      </div>
+      <h3 class="mb-3" style="font-weight: 700;">Your Cart is Empty</h3>
+      <p class="text-muted mb-4" style="font-size: 1.1rem;">Looks like you haven't added any items to your cart yet.</p>
+      <a href="{% url 'store:home' %}" class="btn btn-lg" style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); border: none; color: #000; font-weight: 700; border-radius: 25px; padding: 15px 40px;">
+        <i class="fas fa-shopping-bag mr-2"></i>Start Shopping
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+<style>
+  .cart-item:hover {
+    background-color: #f8f9fa;
+  }
+
+  .address-card:hover {
+    border-color: #FFD700 !important;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+  }
+
+  .address-card input[type="radio"]:checked + label {
+    color: #000;
+  }
+
+  .address-card:has(input[type="radio"]:checked) {
+    border-color: #FFD700 !important;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.05) 100%);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  }
+
+  .premium-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #FFD700, transparent);
+  }
+
+  .address-list::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .address-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  .address-list::-webkit-scrollbar-thumb {
+    background: #FFD700;
+    border-radius: 10px;
+  }
+
+  .address-list::-webkit-scrollbar-thumb:hover {
+    background: #FFA500;
+  }
+</style>
+
+{% endblock content %}
+
+{% block payment-gateway %}
+<!-- Include the PayPal JavaScript SDK -->
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR-PAYPAL-CLIENT-ID&currency=USD"></script>
+
+<script>
+  // Select address card visually
+  function selectAddress(card) {
+    const radio = card.querySelector('input[type="radio"]');
+    if (radio) {
+      radio.checked = true;
+    }
+  }
+
+  // Validate address selection before checkout
+  function validateAddress() {
+    const radios = document.getElementsByClassName('address-radio');
+    let isChecked = false;
+    
+    for (let i = 0; i < radios.length; i++) {
+      if (radios[i].checked) {
+        isChecked = true;
+        break;
+      }
+    }
+    
+    if (!isChecked) {
+      alert('⚠️ Please select a shipping address before proceeding to checkout.');
+      // Scroll to address section
+      document.getElementById('checkout-section').scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center'
+      });
+      return false;
+    }
+    return true;
+  }
+
+  // Render the PayPal button into #paypal-button-container
+  paypal.Buttons({
+    // Set up the transaction
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: '{{total_amount}}'
+          }
+        }]
+      });
+    },
+
+    // Finalize the transaction
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        // Show a success message to the buyer
+        alert('Transaction completed by ' + details.payer.name.given_name + '!');
+        // Saving Order in Database after Payment Success
+        if (validateAddress()) {
+          document.getElementById('myform').submit();
+        }
+      });
+    }
+  }).render('#paypal-button-container');
+</script>
+{% endblock payment-gateway %}
